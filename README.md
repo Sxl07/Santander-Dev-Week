@@ -1,75 +1,85 @@
 # Santander-Dev-Week
 
-Projeto base desenvolvido durante a Santander Dev Week usando Java e Spring Boot.
+API REST desarrollada con Java y Spring Boot durante la Santander Dev Week.
 
-## Tecnologias
+## Tecnologías
 
 - Java 25
 - Spring Boot
+- Spring Data JPA
 - Gradle
+- H2 Database (perfil dev)
 
-## Como executar
+## Estado actual del proyecto
 
-1. No diretório do projeto, execute:
-   ```bash
-   ./gradlew bootRun
-   ```
-2. Para usar o perfil de desenvolvimento com H2, defina `SPRING_PROFILES_ACTIVE=dev`.
-3. A aplicação iniciará localmente com as configurações de `src/main/resources/application-dev.yml`.
+Actualmente el proyecto ya cuenta con:
 
-## Estrutura principal
+- Modelo de dominio base: `User`, `Account`, `Card`, `Feature` y `New`.
+- Repositorio `UserRepository` con Spring Data JPA.
+- Servicio `UserService` y su implementación `UserServiceImpl`.
+- Controlador REST `UserController` con endpoints para consultar y crear usuarios.
+- Manejo global de excepciones con `GlobalExceptionHandler`.
+- Test de carga de contexto con Spring Boot.
 
-- `src/main/java`: código-fonte da aplicação
-- `src/main/resources`: arquivos de configuração e recursos estáticos
-- `src/test/java`: testes automatizados
+## Endpoints disponibles
 
-## Avanços deste push
+- `GET /users/{id}`
+  - Busca un usuario por id.
+  - Respuesta `200 OK` si existe.
+  - Respuesta `404 Not Found` si no existe.
 
-- Modelagem inicial do domínio com `User`, `Account`, `Card`, `Feature` e `New`.
-- Criação do repositório `UserRepository` com Spring Data JPA.
-- Configuração do perfil `dev` com banco H2 em memória em `application-dev.yml`.
-- Adição do launch profile do VS Code para executar a aplicação em modo debug.
+- `POST /users`
+  - Crea un usuario nuevo.
+  - Respuesta `201 Created` con header `Location`.
+  - Respuesta `422 Unprocessable Entity` si ya existe el número de cuenta.
 
-## Diagrama de classes
+## Manejo global de excepciones
 
-```mermaid
-classDiagram
-    class User {
-        -String name
-        -Account account
-        -Feature[] features
-        -Card card
-        -New[] news
-    }
+Se implementó un `@RestControllerAdvice` que centraliza errores HTTP:
 
-    class Account {
-        -String number
-        -String agency
-        -Number balance
-        -Number limit
-    }
+- `IllegalArgumentException` -> `422 Unprocessable Entity`
+- `NoSuchElementException` -> `404 Not Found`
+- `Throwable` -> `500 Internal Server Error`
 
-    class Feature {
-        -String icon
-        -String description
-    }
+## Configuración de desarrollo (H2)
 
-    class Card {
-        -String number
-        -Number limit
-    }
+Archivo: `src/main/resources/application-dev.yml`
 
-    class New {
-        -String icon
-        -String description
-    }
+- Base en memoria: `jdbc:h2:mem:sdw2023`
+- Consola H2 habilitada: `/h2-console`
+- `spring.jpa.hibernate.ddl-auto=create`
 
-    User "1" *-- "1" Account
-    User "1" *-- "N" Feature
-    User "1" *-- "1" Card
-    User "1" *-- "N" New
+## Cómo ejecutar
+
+En la raíz del proyecto:
+
+```bash
+./gradlew bootRun
 ```
 
-## Objetivo
+En Windows (PowerShell):
 
-Este repositório contém os arquivos iniciais do projeto para evolução durante os estudos da Santander Dev Week.
+```powershell
+.\gradlew.bat bootRun
+```
+
+Para usar el perfil dev:
+
+```powershell
+$env:SPRING_PROFILES_ACTIVE="dev"
+.\gradlew.bat bootRun
+```
+
+## Pruebas
+
+Ejecutar tests:
+
+```bash
+./gradlew test
+```
+
+En Windows (PowerShell):
+
+```powershell
+.\gradlew.bat test
+```
