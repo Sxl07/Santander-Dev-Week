@@ -68,5 +68,13 @@ public class User {
     public void setCard(Card card) {
         this.card = card;
     }
+
+    public void updateFrom(User user) {
+        setName(user.getName());
+        setAccount(user.getAccount());
+        setCard(user.getCard());
+        setFeatures(user.getFeatures());
+        setNews(user.getNews());
+    }
     
 }

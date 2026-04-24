@@ -6,5 +6,6 @@ import atlas.santander_dev_week.domain.model.User;
 
 public interface UserRepository extends JpaRepository<User, Long> {
     boolean existsByAccountNumber(String accountNumber);
+    boolean existsByAccountNumberAndIdNot(String accountNumber, long id);
     
 }

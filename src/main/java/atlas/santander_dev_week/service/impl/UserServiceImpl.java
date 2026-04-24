@@ -28,5 +28,23 @@ public class UserServiceImpl implements UserService {
         }
         return userRepository.save(user);
     }
+
+    @Override
+    public User update(long id, User user) {
+        var currentUser = findById(id);
+
+        if (userRepository.existsByAccountNumberAndIdNot(user.getAccount().getNumber(), id)) {
+            throw new IllegalArgumentException("User with account number " + user.getAccount().getNumber() + " already exists.");
+        }
+
+        currentUser.updateFrom(user);
+        return userRepository.save(currentUser);
+    }
+
+    @Override
+    public void delete(long id) {
+        var user = findById(id);
+        userRepository.delete(user);
+    }
     
 }
