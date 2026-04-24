@@ -4,10 +4,12 @@ import java.util.NoSuchElementException;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
+import org.springframework.web.servlet.resource.NoResourceFoundException;
 
 @RestControllerAdvice
 public class GlobalExceptionHandler {
@@ -18,6 +20,12 @@ public class GlobalExceptionHandler {
     public ResponseEntity<String> handleBusinessException(IllegalArgumentException businessException){
         return new ResponseEntity<>(businessException.getMessage(),HttpStatus.UNPROCESSABLE_ENTITY);
     }
+
+    @ExceptionHandler(NoResourceFoundException.class)
+public ResponseEntity<String> handleNoResourceFound(NoResourceFoundException ex){
+return new ResponseEntity<>("Resource not found", HttpStatus.NOT_FOUND);
+}
+
 
     @ExceptionHandler(NoSuchElementException.class)
     public ResponseEntity<String> handleNotFoundException(NoSuchElementException notFoundException){
